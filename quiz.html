@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Quiz App</title>
+  <style>
+      body {
+  font-family: 'Segoe UI', Arial, sans-serif;
+  background: linear-gradient(135deg, #74ebd5, #ACB6E5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  margin: 0;
+}
+
+.container {
+  background: #fff;
+  padding: 30px;
+  border-radius: 12px;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+  width: 420px;
+  text-align: center;
+  animation: fadeIn 0.6s ease-in-out;
+}
+
+h2 {
+  margin-bottom: 15px;
+  color: #333;
+}
+
+input {
+  width: 90%;
+  padding: 10px;
+  margin: 8px 0;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 14px;
+}
+
+button {
+  background: #4CAF50;
+  color: white;
+  border: none;
+  padding: 12px 18px;
+  margin: 10px 5px;
+  cursor: pointer;
+  border-radius: 6px;
+  font-size: 15px;
+  transition: all 0.3s ease;
+}
+
+button:hover {
+  background: #45a049;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+}
+
+.timer {
+  font-weight: bold;
+  color: #e63946;
+  margin-top: 12px;
+  font-size: 16px;
+}
+
+ul {
+  text-align: left;
+  margin-top: 15px;
+  padding-left: 20px;
+}
+
+li {
+  margin-bottom: 8px;
+  font-size: 14px;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: scale(0.95); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+      
+  </style>
+</head>
+<body>
+  <div class="container" id="app">
+    <!-- Content will be injected by JS -->
+  </div>
+
+  <script>
+    const app = document.getElementById("app");
+
+    let loggedIn = false;
+    let username = "";
+    let currentQ = 0;
+    let answers = [];
+    let timeLeft = 10;
+    let timer;
+
+    const questions = [
+      { q: "What is 2 + 2?", options: ["3", "4", "5"], answer: "4" },
+      { q: "Capital of India?", options: ["Delhi", "Mumbai", "Kolkata"], answer: "Delhi" },
+      { q: "HTML stands for?", options: ["HyperText Markup Language", "HighText Machine Language", "None"], answer: "HyperText Markup Language" },
+      { q: "React is a ___?", options: ["Library", "Framework", "Language"], answer: "Library" },
+      { q: "CSS is used for?", options: ["Styling", "Logic", "Database"], answer: "Styling" },
+      { q: "JS stands for?", options: ["JavaScript", "JavaSource", "None"], answer: "JavaScript" },
+      { q: "Which is not a programming language?", options: ["Python", "HTML", "C++"], answer: "HTML" },
+      { q: "Which company created React?", options: ["Google", "Facebook", "Microsoft"], answer: "Facebook" },
+      { q: "Which tag is used for images?", options: ["<img>", "<image>", "<pic>"], answer: "<img>" },
+      { q: "Which is a backend language?", options: ["Node.js", "CSS", "HTML"], answer: "Node.js" }
+    ];
+
+    function showLogin() {
+      app.innerHTML = `
+        <h2>Login</h2>
+        <input type="text" id="user" placeholder="Enter Username"><br><br>
+        <input type="password" id="pass" placeholder="Enter Password"><br><br>
+        <button onclick="login()">Login</button>
+      `;
+    }
+
+    function login() {
+      const user = document.getElementById("user").value;
+      if (user.trim() !== "") {
+        username = user;
+        loggedIn = true;
+        showQuestion();
+      }
+    }
+
+    function showQuestion() {
+      if (currentQ >= questions.length) {
+        showResults();
+        return;
+      }
+      const q = questions[currentQ];
+      app.innerHTML = `
+        <h2>Question ${currentQ + 1}</h2>
+        <p>${q.q}</p>
+        ${q.options.map(opt => `<button onclick="selectAnswer('${opt}')">${opt}</button>`).join("<br>")}
+        <p class="timer">Time Left: <span id="time">${timeLeft}</span>s</p>
+      `;
+      startTimer();
+    }
+
+    function startTimer() {
+      clearInterval(timer);
+      timeLeft = 10;
+      document.getElementById("time").textContent = timeLeft;
+      timer = setInterval(() => {
+        timeLeft--;
+        document.getElementById("time").textContent = timeLeft;
+        if (timeLeft <= 0) {
+          clearInterval(timer);
+          answers.push("No Answer");
+          currentQ++;
+          showQuestion();
+        }
+      }, 1000);
+    }
+
+    function selectAnswer(ans) {
+      clearInterval(timer);
+      answers.push(ans);
+      currentQ++;
+      showQuestion();
+    }
+
+    function showResults() {
+      let score = 0;
+      answers.forEach((a, i) => {
+        if (a === questions[i].answer) score++;
+      });
+      app.innerHTML = `
+        <h2>Quiz Finished!</h2>
+        <p>Username: ${username}</p>
+        <p>Your Score: ${score}/${questions.length}</p>
+        <ul>
+          ${questions.map((q, i) => `<li>${q.q} - Your Answer: ${answers[i]} | Correct: ${q.answer}</li>`).join("")}
+        </ul>
+      `;
+    }
+
+    // Start with login
+    showLogin();
+  </script>
+</body>
+</html>
