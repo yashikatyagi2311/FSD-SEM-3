@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>ABESEC Attendance Calculator</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(135deg, #74ebd5, #ACB6E5);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+    .container {
+      background: #fff;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+      width: 350px;
+      text-align: center;
+    }
+    h2 {
+      margin-bottom: 20px;
+      color: #333;
+    }
+    input {
+      width: 90%;
+      padding: 10px;
+      margin: 10px 0;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      font-size: 14px;
+    }
+    button {
+      background: #4CAF50;
+      color: white;
+      border: none;
+      padding: 12px 20px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 15px;
+      transition: 0.3s;
+    }
+    button:hover {
+      background: #45a049;
+    }
+    .result {
+      margin-top: 20px;
+      font-size: 16px;
+      font-weight: bold;
+      color: #222;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>ABESEC Attendance Calculator</h2>
+    <input type="number" id="days" placeholder="Enter total days">
+    <input type="number" id="attended" placeholder="Enter attended classes">
+    <button onclick="calculateAttendance()">Calculate</button>
+    <div class="result" id="result"></div>
+  </div>
+
+  <script>
+    function calculateAttendance() {
+      let days = document.getElementById("days").value;
+      let attended = document.getElementById("attended").value;
+      let resultBox = document.getElementById("result");
+
+      if (days <= 0 || attended < 0 || attended > days) {
+        resultBox.innerHTML = "⚠️ Please enter valid numbers.";
+        resultBox.style.color = "red";
+        return;
+      }
+
+      let percentage = (attended / days) * 100;
+      resultBox.innerHTML = `Your Attendance: ${percentage.toFixed(2)}%`;
+
+      if (percentage < 75) {
+        resultBox.style.color = "red";
+        resultBox.innerHTML += "<br>❌ Short Attendance!";
+      } else {
+        resultBox.style.color = "green";
+        resultBox.innerHTML += "<br>✅ You are eligible!";
+      }
+    }
+  </script>
+</body>
+</html>
